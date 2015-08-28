@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Flash Cards</title>
+  <!-- We've provided some styles for you, aren't we nice? -->
+  <link rel="stylesheet" type="text/css" href="/styles/reset.css" />
+  <link rel="stylesheet" type="text/css" href="/styles/style.css" />
+  <script src="/js/angular.js"></script>
+</head>
+
+<body ng-app="flashCards" ng-cloak>
+  <div ng-controller="StatsController" id="statistics">
+    <div id="scoreboard">
+      <h3>Correct:
+        <span>{{ scores.correct }}</span>
+      </h3>
+      <h3>Incorrect:
+        <span>{{ scores.incorrect }}</span>
+      </h3>
+    </div>
+  </div>
+  <form name="newCardForm">
+    <!-- <pre> {{ newCardForm | json }} </pre> -->
+    <!-- <pre>{{newCardForm.$error | json}}</pre> -->
+    <div ng-controller="NewCardController">
+      <input type="text" ng-model="newCard.question" name="question" ng-minlength="15" required>
+      <p ng-show="newCardForm.question.$error.required">Question is a required field</p>
+      <p ng-show="newCardForm.question.$error.minlength">Question is too short</p>
+      <select ng-model="newCard.category" name="category" required>
+        <p ng-show="newCardForm.category.$error.required">Category is a required field</p>
+        <option>MongoDB</option>
+        <option>Express</option>
+        <option>Angular</option>
+        <option>Node</option>
+      </select>
+      <input type="text" ng-model="newCard.answers[0].text" name="answer1" ng-maxlength="40">
+      <input type="checkbox" ng-model="newCard.answers[0].correct">
+      <p ng-show="newCardForm.answer1.$error.maxlength">Answer is too long</p>
+      <input type="text" ng-model="newCard.answers[1].text" name="answer2" ng-maxlength="40">
+      <input type="checkbox" ng-model="newCard.answers[1].correct">
+      <p ng-show="newCardForm.answer2.$error.maxlength">Answer is too long</p>
+      <input type="text" ng-model="newCard.answers[2].text" name="answer3" ng-maxlength="40">
+      <input type="checkbox" ng-model="newCard.answers[2].correct">
+      <p ng-show="newCardForm.answer3.$error.maxlength">Answer is too long</p>
+      <button ng-click="sendForm(newCard); reset()" ng-show="newCardForm.$valid">Submit me</button>
+    </div>
+  </form>
+  <form name="updateCardForm">
+    <!-- <pre> {{ newCardForm | json }} </pre> -->
+    <!-- <pre>{{newCardForm.$error | json}}</pre> -->
+    <pre>{{ updateCardForm.id }}</pre>
+    <div ng-controller="UpdateCardController">
+      <select ng-model="newCard.id" name="id" required>
+        <option ng-repeat="flashCard in flashCards" value='flashCard._id'>{{ flashCard.question }}</option>
+      </select>
+      <input type="text" ng-model="newCard.question" name="question" ng-minlength="15">
+      <p ng-show="updateCardForm.question.$error.minlength">Question is too short</p>
+      <select ng-model="newCard.category" name="category">
+        <option>MongoDB</option>
+        <option>Express</option>
+        <option>Angular</option>
+        <option>Node</option>
+      </select>
+      <input type="text" ng-model="newCard.answers[0].text" name="answer1" ng-maxlength="40">
+      <input type="checkbox" ng-model="newCard.answers[0].correct">
+      <p ng-show="updateCardForm.answer1.$error.maxlength">Answer is too long</p>
+      <input type="text" ng-model="newCard.answers[1].text" name="answer2" ng-maxlength="40">
+      <input type="checkbox" ng-model="newCard.answers[1].correct">
+      <p ng-show="updateCardForm.answer2.$error.maxlength">Answer is too long</p>
+      <input type="text" ng-model="newCard.answers[2].text" name="answer3" ng-maxlength="40">
+      <input type="checkbox" ng-model="newCard.answers[2].correct">
+      <p ng-show="updateCardForm.answer3.$error.maxlength">Answer is too long</p>
+      <button ng-click="updateCard(); reset()" ng-show="updateCardForm.$valid">Submit me</button>
+    </div>
+  </form>
+  <div ng-controller="MainController">
+    <div class="cats">
+      <button border-hover ng-repeat="category in categories" class="category-button" ng-click="getCategoryCards(category)" ng-class="{ active: category === selectedCategory }">{{ category }}</button>
+      <button class="category-button" ng-click="getCategoryCards()" ng-class="{ active: selectedCategory === undefined }">All</button>
+      <loader ng-show="loading"></loader>
+    </div>
+    <flash-card card="flashCard" ng-hide="loading" ng-repeat="flashCard in flashCards | orderBy : 'question'"></flash-card>
+    <script src="/js/app.js"></script>
+    <script src="/js/controllers/main.controller.js"></script>
+    <script src="/js/controllers/score.controller.js"></script>
+    <script src="/js/factories/flashcard.factory.js"></script>
+    <script src="/js/factories/score.factory.js"></script>
+    <script src="/js/directives/loader/loader.js"></script>
+    <script src="/js/directives/flashcard/flashcard.js"></script>
+    <script src="/js/directives/boldborder/boldborder.js"></script>
+    <script src="/js/controllers/newCardController.js"></script>
+    <script src="/js/controllers/updateCardController.js"></script>
+</body>
+
+</html>
